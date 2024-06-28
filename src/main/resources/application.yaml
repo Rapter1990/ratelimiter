@@ -1,0 +1,23 @@
+server:
+  port: 1224
+
+# MYSQL
+spring:
+  application:
+    name: ratelimiter
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    name: mysql
+    url: jdbc:mysql://${RATELIMITER_DB_IP:localhost}:${RATELIMITER_DB_PORT:3306}/ratelimiter
+    username: ${DATABASE_USERNAME:root}
+    password: ${DATABASE_PASSWORD:password}
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
