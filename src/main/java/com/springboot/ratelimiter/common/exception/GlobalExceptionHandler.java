@@ -3,23 +3,29 @@ package com.springboot.ratelimiter.common.exception;
 import com.springboot.ratelimiter.common.exception.error.CustomError;
 import jakarta.validation.ConstraintViolationException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-@RestControllerAdvice
-public class GlobalExceptionHandler {
+@ControllerAdvice
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex) {
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
         Map<String, String> errors = new HashMap<>();
 
@@ -31,8 +37,20 @@ public class GlobalExceptionHandler {
                 }
         );
 
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        CustomError customError = CustomError.builder()
+                .time(LocalDateTime.now())
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .header(CustomError.Header.VALIDATION_ERROR.getName())
+                .message("Validation failed")
+                .subErrors(errors.entrySet().stream()
+                        .map(e -> CustomError.CustomSubError.builder()
+                                .field(e.getKey())
+                                .message(e.getValue())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
 
+        return new ResponseEntity<>(customError, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -51,13 +69,30 @@ public class GlobalExceptionHandler {
                         )
                 );
 
-        return new ResponseEntity<>(subErrors, HttpStatus.BAD_REQUEST);
+        CustomError customError = CustomError.builder()
+                .time(LocalDateTime.now())
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .header(CustomError.Header.VALIDATION_ERROR.getName())
+                .message("Constraint violation")
+                .subErrors(subErrors)
+                .build();
+
+        return new ResponseEntity<>(customError, HttpStatus.BAD_REQUEST);
 
     }
 
     @ExceptionHandler(RuntimeException.class)
     protected ResponseEntity<?> handleRuntimeException(final RuntimeException runtimeException) {
-        return new ResponseEntity<>(runtimeException, HttpStatus.NOT_FOUND);
+
+        CustomError customError = CustomError.builder()
+                .time(LocalDateTime.now())
+                .httpStatus(HttpStatus.NOT_FOUND)
+                .header(CustomError.Header.API_ERROR.getName())
+                .message(runtimeException.getMessage())
+                .build();
+
+        return new ResponseEntity<>(customError, HttpStatus.NOT_FOUND);
+
     }
 
 }
