@@ -30,11 +30,13 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
     private GlobalExceptionHandler globalExceptionHandler;
 
     @Test
-    void givenMethodArgumentNotValidException_handleMethodArgumentNotValid_throwCustomError() throws NoSuchMethodException {
-        // Given
-        MethodArgumentNotValidException mockException = getMethodArgumentNotValidException();
+    void givenMethodArgumentNotValidException_handleMethodArgumentNotValid_throwCustomError() {
 
-        // When
+        // Given
+        MethodParameter mockParameter = mock(MethodParameter.class);
+        BindingResult mockBindingResult = mock(BindingResult.class);
+        when(mockBindingResult.getAllErrors()).thenReturn(Collections.emptyList());
+
         CustomError expectedError = CustomError.builder()
                 .time(LocalDateTime.now())
                 .httpStatus(HttpStatus.BAD_REQUEST)
@@ -42,6 +44,9 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
                 .message("Validation failed")
                 .subErrors(Collections.emptyList())
                 .build();
+
+        // When
+        MethodArgumentNotValidException mockException = new MethodArgumentNotValidException(mockParameter, mockBindingResult);
 
         // Then
         ResponseEntity<Object> responseEntity = globalExceptionHandler.handleMethodArgumentNotValid(
@@ -52,14 +57,6 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
 
     }
 
-    private MethodArgumentNotValidException getMethodArgumentNotValidException() throws NoSuchMethodException {
-        Method method = GlobalExceptionHandlerTest.class.getDeclaredMethod("handleMethodArgumentNotValid");
-        int parameterIndex = -1;
-
-        MethodParameter mockParameter = new MethodParameter(method, parameterIndex);
-        BindingResult mockBindingResult = new BeanPropertyBindingResult(null, "");
-        return new MethodArgumentNotValidException(mockParameter, mockBindingResult);
-    }
 
     @Test
     void givenConstraintViolationException_whenHandlePathVariableErrors_throwCustomError() {
@@ -74,7 +71,7 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
                 .message("must not be null")
                 .field("")
                 .value("invalid value")
-                .type(mockViolation.getRootBeanClass().getSimpleName())
+                .type("String") // Default to String if getRootBeanClass() is null
                 .build();
 
         CustomError expectedError = CustomError.builder()
@@ -87,11 +84,10 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
 
         // When
         when(mockViolation.getMessage()).thenReturn("must not be null");
-
-        when(mockPath.toString()).thenReturn("");
         when(mockViolation.getPropertyPath()).thenReturn(mockPath);
+        when(mockPath.toString()).thenReturn("field");
         when(mockViolation.getInvalidValue()).thenReturn("invalid value");
-        when(mockViolation.getRootBeanClass()).thenReturn(String.class);
+        when(mockViolation.getRootBeanClass()).thenReturn(String.class); // Ensure this does not return null
 
         // Then
         ResponseEntity<Object> responseEntity = globalExceptionHandler.handlePathVariableErrors(mockException);
