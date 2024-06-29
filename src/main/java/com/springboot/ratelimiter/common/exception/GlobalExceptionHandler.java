@@ -1,6 +1,8 @@
 package com.springboot.ratelimiter.common.exception;
 
 import com.springboot.ratelimiter.common.exception.error.CustomError;
+import com.springboot.ratelimiter.common.exception.ratelimit.RateLimitExceededException;
+import com.springboot.ratelimiter.common.exception.user.EmailAlreadyExistsException;
 import jakarta.validation.ConstraintViolationException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -94,6 +96,32 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(customError, HttpStatus.NOT_FOUND);
 
+    }
+
+    @ExceptionHandler(RateLimitExceededException.class)
+    protected ResponseEntity<Object> handleRateLimitExceededException(final RateLimitExceededException ex) {
+
+        CustomError customError = CustomError.builder()
+                .time(LocalDateTime.now())
+                .httpStatus(HttpStatus.TOO_MANY_REQUESTS)
+                .header(CustomError.Header.VALIDATION_ERROR.getName())
+                .message(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(customError, HttpStatus.TOO_MANY_REQUESTS);
+    }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    protected ResponseEntity<Object> handleEmailAlreadyExistsException(final EmailAlreadyExistsException ex) {
+
+        CustomError customError = CustomError.builder()
+                .time(LocalDateTime.now())
+                .httpStatus(HttpStatus.CONFLICT)
+                .header(CustomError.Header.VALIDATION_ERROR.getName())
+                .message(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(customError, HttpStatus.CONFLICT);
     }
 
 }

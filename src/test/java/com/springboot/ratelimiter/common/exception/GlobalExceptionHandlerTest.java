@@ -2,6 +2,8 @@ package com.springboot.ratelimiter.common.exception;
 
 import com.springboot.ratelimiter.base.AbstractRestControllerTest;
 import com.springboot.ratelimiter.common.exception.error.CustomError;
+import com.springboot.ratelimiter.common.exception.ratelimit.RateLimitExceededException;
+import com.springboot.ratelimiter.common.exception.user.EmailAlreadyExistsException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
@@ -11,11 +13,9 @@ import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Set;
@@ -119,6 +119,40 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
 
     }
 
+    @Test
+    void givenRateLimitExceededException_whenHandleRateLimitExceededException_throwCustomError() {
+
+        // Given
+        RateLimitExceededException mockException = new RateLimitExceededException("Too many requests");
+
+        // When
+        CustomError expectedError = CustomError.builder()
+                .time(LocalDateTime.now())
+                .httpStatus(HttpStatus.TOO_MANY_REQUESTS)
+                .header(CustomError.Header.VALIDATION_ERROR.getName())
+                .message("Too many requests")
+                .build();
+
+        // Then
+        ResponseEntity<?> responseEntity = globalExceptionHandler.handleRateLimitExceededException(mockException);
+
+        CustomError actualError = (CustomError) responseEntity.getBody();
+        checkCustomError(expectedError, actualError);
+
+    }
+
+    @Test
+    void givenEmailAlreadyExistsException_whenHandleEmailAlreadyExistsException_throwCustomError() {
+        // Given
+        EmailAlreadyExistsException mockException = new EmailAlreadyExistsException("test@example.com");
+
+        // When
+        ResponseEntity<?> responseEntity = globalExceptionHandler.handleEmailAlreadyExistsException(mockException);
+
+        // Then
+        assertCustomError(responseEntity, HttpStatus.CONFLICT, "Email already exists: test@example.com");
+    }
+
     private void checkCustomError(CustomError expectedError, CustomError actualError) {
 
         assertThat(actualError).isNotNull();
@@ -139,6 +173,16 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
                 assertThat(actualError.getSubErrors().get(0).getType()).isEqualTo(expectedError.getSubErrors().get(0).getType());
             }
         }
+    }
+
+    private void assertCustomError(ResponseEntity<?> responseEntity, HttpStatus expectedStatus, String expectedMessage) {
+        CustomError actualError = (CustomError) responseEntity.getBody();
+
+        assertThat(actualError).isNotNull();
+        assertThat(actualError.getTime()).isNotNull();
+        assertThat(actualError.getHttpStatus()).isEqualTo(expectedStatus);
+        assertThat(actualError.getHeader()).isEqualTo(CustomError.Header.VALIDATION_ERROR.getName());
+        assertThat(actualError.getMessage()).isEqualTo(expectedMessage);
     }
 
 }
