@@ -21,3 +21,16 @@ spring:
       ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+rate:
+  limiter:
+    max:
+      requests: 5
+    time:
+      window:
+        seconds: 60
+
