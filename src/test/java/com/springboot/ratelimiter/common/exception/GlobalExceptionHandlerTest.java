@@ -129,7 +129,7 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
         CustomError expectedError = CustomError.builder()
                 .time(LocalDateTime.now())
                 .httpStatus(HttpStatus.TOO_MANY_REQUESTS)
-                .header(CustomError.Header.VALIDATION_ERROR.getName())
+                .header(CustomError.Header.RATE_LIMITER_EXCEEDED_ERROR.getName())
                 .message("Too many requests")
                 .build();
 
