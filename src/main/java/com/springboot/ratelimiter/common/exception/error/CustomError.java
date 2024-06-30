@@ -59,7 +59,9 @@ public class CustomError {
 
         DATABASE_ERROR("DATABASE ERROR"),
 
-        PROCESS_ERROR("PROCESS ERROR");
+        PROCESS_ERROR("PROCESS ERROR"),
+
+        RATE_LIMITER_EXCEEDED_ERROR("RATE LIMITER EXCEEDED ERROR");
 
         private final String name;
 

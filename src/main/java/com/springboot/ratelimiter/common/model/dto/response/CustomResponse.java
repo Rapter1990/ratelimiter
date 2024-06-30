@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.LocalDateTime;
 
@@ -27,11 +28,20 @@ public class CustomResponse<T> {
             .build();
 
 
-    public static <T> CustomResponse<T> successOf(final T response) {
-        return CustomResponse.<T>builder()
-                .httpStatus(HttpStatus.OK)
-                .isSuccess(true)
+    public static <E> CustomResponse<E> ok(E response) {
+        return CustomResponse.<E>builder()
                 .response(response)
+                .isSuccess(true)
+                .httpStatus(HttpStatus.OK)
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    public static <E> CustomResponse<E> created(E response) {
+        return CustomResponse.<E>builder()
+                .response(response)
+                .isSuccess(true)
+                .httpStatus(HttpStatus.CREATED)
                 .build();
     }
 
