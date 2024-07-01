@@ -3,6 +3,7 @@ package com.springboot.ratelimiter.common.exception;
 import com.springboot.ratelimiter.common.exception.error.CustomError;
 import com.springboot.ratelimiter.common.exception.ratelimit.RateLimitExceededException;
 import com.springboot.ratelimiter.common.exception.user.EmailAlreadyExistsException;
+import com.springboot.ratelimiter.common.exception.user.UserNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -122,6 +123,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(customError, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    protected ResponseEntity<Object> handleUserNotFoundException(final UserNotFoundException ex) {
+
+        CustomError customError = CustomError.builder()
+                .time(LocalDateTime.now())
+                .httpStatus(HttpStatus.NOT_FOUND)
+                .header(CustomError.Header.NOT_FOUND.getName())
+                .message(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(customError, HttpStatus.NOT_FOUND);
     }
 
 }

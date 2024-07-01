@@ -4,6 +4,7 @@ import com.springboot.ratelimiter.base.AbstractRestControllerTest;
 import com.springboot.ratelimiter.common.exception.error.CustomError;
 import com.springboot.ratelimiter.common.exception.ratelimit.RateLimitExceededException;
 import com.springboot.ratelimiter.common.exception.user.EmailAlreadyExistsException;
+import com.springboot.ratelimiter.common.exception.user.UserNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
@@ -53,6 +54,8 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
                 mockException, new HttpHeaders(), HttpStatus.BAD_REQUEST, null);
 
         CustomError actualError = (CustomError) responseEntity.getBody();
+
+        // Verify
         checkCustomError(expectedError, actualError);
 
     }
@@ -93,6 +96,8 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
         ResponseEntity<Object> responseEntity = globalExceptionHandler.handlePathVariableErrors(mockException);
 
         CustomError actualError = (CustomError) responseEntity.getBody();
+
+        // Verify
         checkCustomError(expectedError, actualError);
 
     }
@@ -103,7 +108,6 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
         // Given
         RuntimeException mockException = new RuntimeException("Runtime exception");
 
-        // When
         CustomError expectedError = CustomError.builder()
                 .time(LocalDateTime.now())
                 .httpStatus(HttpStatus.NOT_FOUND)
@@ -111,10 +115,13 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
                 .message("Runtime exception")
                 .build();
 
-        // Then
+        // When
         ResponseEntity<?> responseEntity = globalExceptionHandler.handleRuntimeException(mockException);
 
+        // Then
         CustomError actualError = (CustomError) responseEntity.getBody();
+
+        // Verify
         checkCustomError(expectedError, actualError);
 
     }
@@ -133,24 +140,63 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
                 .message("Too many requests")
                 .build();
 
-        // Then
+        // When
         ResponseEntity<?> responseEntity = globalExceptionHandler.handleRateLimitExceededException(mockException);
 
+        // Then
         CustomError actualError = (CustomError) responseEntity.getBody();
+
+        // Verify
         checkCustomError(expectedError, actualError);
 
     }
 
     @Test
     void givenEmailAlreadyExistsException_whenHandleEmailAlreadyExistsException_throwCustomError() {
+
         // Given
         EmailAlreadyExistsException mockException = new EmailAlreadyExistsException("test@example.com");
+
+        CustomError expectedError = CustomError.builder()
+                .time(LocalDateTime.now())
+                .httpStatus(HttpStatus.CONFLICT)
+                .header(CustomError.Header.VALIDATION_ERROR.getName())
+                .message("Email already exists: test@example.com")
+                .build();
 
         // When
         ResponseEntity<?> responseEntity = globalExceptionHandler.handleEmailAlreadyExistsException(mockException);
 
         // Then
-        assertCustomError(responseEntity, HttpStatus.CONFLICT, "Email already exists: test@example.com");
+        CustomError actualError = (CustomError) responseEntity.getBody();
+
+        // Verify
+        checkCustomError(expectedError, actualError);
+
+    }
+
+    @Test
+    void givenUserNotFoundException_whenHandleUserNotFoundException_throwCustomError() {
+
+        // Given
+        UserNotFoundException mockException = new UserNotFoundException("123");
+
+        CustomError expectedError = CustomError.builder()
+                .time(LocalDateTime.now())
+                .httpStatus(HttpStatus.CONFLICT)
+                .header(CustomError.Header.NOT_FOUND.getName())
+                .message("No user was found with ID: 123")
+                .build();
+
+        // When
+        ResponseEntity<?> responseEntity = globalExceptionHandler.handleUserNotFoundException(mockException);
+
+        // Then
+        CustomError actualError = (CustomError) responseEntity.getBody();
+
+        // Verify
+        checkCustomError(expectedError, actualError);
+
     }
 
     private void checkCustomError(CustomError expectedError, CustomError actualError) {
@@ -173,16 +219,6 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
                 assertThat(actualError.getSubErrors().get(0).getType()).isEqualTo(expectedError.getSubErrors().get(0).getType());
             }
         }
-    }
-
-    private void assertCustomError(ResponseEntity<?> responseEntity, HttpStatus expectedStatus, String expectedMessage) {
-        CustomError actualError = (CustomError) responseEntity.getBody();
-
-        assertThat(actualError).isNotNull();
-        assertThat(actualError.getTime()).isNotNull();
-        assertThat(actualError.getHttpStatus()).isEqualTo(expectedStatus);
-        assertThat(actualError.getHeader()).isEqualTo(CustomError.Header.VALIDATION_ERROR.getName());
-        assertThat(actualError.getMessage()).isEqualTo(expectedMessage);
     }
 
 }
