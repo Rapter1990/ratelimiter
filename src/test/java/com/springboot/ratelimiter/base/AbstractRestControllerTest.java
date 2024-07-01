@@ -16,4 +16,6 @@ public class AbstractRestControllerTest extends AbstractTestContainerConfigurati
     @Autowired
     protected ObjectMapper objectMapper;
 
+    protected String BASE_PATH = "/api/v1/users";
+
 }
