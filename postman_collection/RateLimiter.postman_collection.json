@@ -1,0 +1,170 @@
+{
+	"info": {
+		"_postman_id": "a0349856-2187-4e26-982f-27ba855b1b91",
+		"name": "RateLimiter",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33002673"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"User 1\",\r\n    \"email\": \"user@userinfo.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:1224/api/v1/users/save",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1224",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"save"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:1224/api/v1/users/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1224",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "0ac5f367-cd8e-4950-8714-45ef2872002b"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Users",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"pagination\" : {\r\n        \"pageNumber\" : 1,\r\n        \"pageSize\" : 5\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:1224/api/v1/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1224",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User By ID",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Updated User 1\",\r\n    \"email\": \"updateduser@userinfo.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:1224/api/v1/users/{id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1224",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{id}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User By ID",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"User 1\",\r\n    \"email\": \"user@userinfo.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:1224/api/v1/users/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1224",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "0ac5f367-cd8e-4950-8714-45ef2872002b"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
