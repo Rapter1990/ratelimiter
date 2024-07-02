@@ -24,11 +24,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Global exception handler class named {@link GlobalExceptionHandler} for handling various exceptions across the application.
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    /**
+     * Handles MethodArgumentNotValidException and returns a custom error response with validation details.
+     *
+     * @param ex the exception thrown when method arguments are not valid
+     * @param headers the HTTP headers
+     * @param status the HTTP status code
+     * @param request the web request
+     * @return a ResponseEntity containing the custom error response
+     */
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
+                                                                  HttpStatusCode status, WebRequest request) {
 
         Map<String, String> errors = new HashMap<>();
 
@@ -56,7 +69,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(customError, HttpStatus.BAD_REQUEST);
     }
 
-
+    /**
+     * Handles ConstraintViolationException and returns a custom error response with constraint violation details.
+     *
+     * @param constraintViolationException the exception thrown when constraint violations occur
+     * @return a ResponseEntity containing the custom error response
+     */
     @ExceptionHandler(ConstraintViolationException.class)
     protected ResponseEntity<Object> handlePathVariableErrors(final ConstraintViolationException constraintViolationException) {
 
@@ -85,6 +103,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
+    /**
+     * Handles RuntimeException and returns a custom error response.
+     *
+     * @param runtimeException the runtime exception thrown
+     * @return a ResponseEntity containing the custom error response
+     */
     @ExceptionHandler(RuntimeException.class)
     protected ResponseEntity<?> handleRuntimeException(final RuntimeException runtimeException) {
 
@@ -99,6 +123,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
+    /**
+     * Handles RateLimitExceededException and returns a custom error response.
+     *
+     * @param ex the exception thrown when rate limit is exceeded
+     * @return a ResponseEntity containing the custom error response
+     */
     @ExceptionHandler(RateLimitExceededException.class)
     protected ResponseEntity<Object> handleRateLimitExceededException(final RateLimitExceededException ex) {
 
@@ -112,6 +142,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(customError, HttpStatus.TOO_MANY_REQUESTS);
     }
 
+    /**
+     * Handles EmailAlreadyExistsException and returns a custom error response.
+     *
+     * @param ex the exception thrown when an email already exists
+     * @return a ResponseEntity containing the custom error response
+     */
     @ExceptionHandler(EmailAlreadyExistsException.class)
     protected ResponseEntity<Object> handleEmailAlreadyExistsException(final EmailAlreadyExistsException ex) {
 
@@ -125,6 +161,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(customError, HttpStatus.CONFLICT);
     }
 
+    /**
+     * Handles UserNotFoundException and returns a custom error response.
+     *
+     * @param ex the exception thrown when a user is not found
+     * @return a ResponseEntity containing the custom error response
+     */
     @ExceptionHandler(UserNotFoundException.class)
     protected ResponseEntity<Object> handleUserNotFoundException(final UserNotFoundException ex) {
 
