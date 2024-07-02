@@ -13,6 +13,9 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * Abstract base class named {@link BaseEntity} for entities, providing created and updated timestamps.
+ */
 @Getter
 @Setter
 @SuperBuilder
