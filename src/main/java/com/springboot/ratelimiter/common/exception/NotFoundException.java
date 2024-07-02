@@ -4,6 +4,9 @@ import org.springframework.http.HttpStatus;
 
 import java.io.Serial;
 
+/**
+ * An abstract exception class named {@link NotFoundException} representing the scenario where an entity is not found.
+ */
 public abstract class NotFoundException extends RuntimeException {
 
     @Serial

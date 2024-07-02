@@ -4,6 +4,9 @@ import com.springboot.ratelimiter.common.exception.NotFoundException;
 
 import java.io.Serial;
 
+/**
+ * Exception class named {@link UserNotFoundException} thrown when a user is not found.
+ */
 public class UserNotFoundException extends NotFoundException {
 
     @Serial
