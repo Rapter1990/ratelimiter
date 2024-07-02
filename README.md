@@ -15,7 +15,7 @@
       <li><b>UserService:</b> Contains the business logic for user management. It performs CRUD operations on the User entity and interacts with the RateLimiterService to apply rate limiting rules.</li>
       <li><b>RateLimiterService:</b> Utilizes Redis to track and enforce rate limiting rules. It ensures that the number of requests made by a user does not exceed the specified limit within a given time window.</li>
       <li><b>UserRepository:</b> Extends Spring Data JPA's JpaRepository, providing methods for performing database operations on user entities. This layer abstracts the data access operations, making it easier to manage user data.</li>
-      <li><b>Redis Configuration:</b> Redis is configured as a cache to store rate limiting data. This configuration ensures high performance and scalability in tracking and enforcing rate limits.</li>
+      <li><b>Redis Configuration:</b> Redis is configured to support rate limiting functionality. The configuration includes setting up a RedisTemplate for efficient data access and operations. This template handles the interactions with Redis, such as incrementing request counts and setting expiration times for keys, ensuring accurate rate limiting.</li>
       <li><b>Validation:</b> The application uses Hibernate Validator for validating user input. This ensures that the data passed to the API endpoints is in the correct format and adheres to the defined constraints.</li>
       <li><b>Exception Handling:</b> Custom exception handling mechanisms are implemented to manage various error scenarios, such as user not found, email already exists, and rate limit exceeded.</li>
     </ul>
