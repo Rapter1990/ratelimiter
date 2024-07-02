@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * DTO named {@link UserPagingRequest} for paginating user data, extending from CustomPagingRequest.
+ */
 @Getter
 @Setter
 @SuperBuilder

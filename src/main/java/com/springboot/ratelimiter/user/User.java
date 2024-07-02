@@ -4,6 +4,10 @@ import com.springboot.ratelimiter.common.model.BaseDomainModel;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Domain Model class named {@link User} representing a User, extending from BaseDomainModel.
+ * Includes fields for id, name, and email.
+ */
 @Getter
 @Setter
 @SuperBuilder

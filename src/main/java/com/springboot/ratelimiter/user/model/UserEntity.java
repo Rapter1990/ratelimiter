@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Entity class named {@link UserEntity} representing a User, mapped to the "USERS" table.
+ * Includes fields for id, name, and email, with UUID generation for the id.
+ */
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
