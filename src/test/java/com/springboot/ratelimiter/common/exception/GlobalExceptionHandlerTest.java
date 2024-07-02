@@ -25,11 +25,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test class for {@link GlobalExceptionHandler}.
+ * This class tests the various exception handling methods of the {@link GlobalExceptionHandler} class
+ * to ensure they return the expected {@link CustomError} responses.
+ */
 class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
 
     @InjectMocks
     private GlobalExceptionHandler globalExceptionHandler;
 
+    /**
+     * Tests the handling of {@link MethodArgumentNotValidException}.
+     * This test verifies that a {@link CustomError} is returned with the expected properties
+     * when a {@link MethodArgumentNotValidException} is thrown.
+     */
     @Test
     void givenMethodArgumentNotValidException_handleMethodArgumentNotValid_throwCustomError() {
 
@@ -60,7 +70,11 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
 
     }
 
-
+    /**
+     * Tests the handling of {@link ConstraintViolationException} for path variable errors.
+     * This test verifies that a {@link CustomError} is returned with the expected properties
+     * when a {@link ConstraintViolationException} is thrown.
+     */
     @Test
     void givenConstraintViolationException_whenHandlePathVariableErrors_throwCustomError() {
 
@@ -102,6 +116,11 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
 
     }
 
+    /**
+     * Tests the handling of {@link RuntimeException}.
+     * This test verifies that a {@link CustomError} is returned with the expected properties
+     * when a {@link RuntimeException} is thrown.
+     */
     @Test
     void givenRuntimeException_whenHandleRuntimeException_throwCustomError() {
 
@@ -126,6 +145,11 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
 
     }
 
+    /**
+     * Tests the handling of {@link RateLimitExceededException}.
+     * This test verifies that a {@link CustomError} is returned with the expected properties
+     * when a {@link RateLimitExceededException} is thrown.
+     */
     @Test
     void givenRateLimitExceededException_whenHandleRateLimitExceededException_throwCustomError() {
 
@@ -151,6 +175,11 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
 
     }
 
+    /**
+     * Tests the handling of {@link EmailAlreadyExistsException}.
+     * This test verifies that a {@link CustomError} is returned with the expected properties
+     * when an {@link EmailAlreadyExistsException} is thrown.
+     */
     @Test
     void givenEmailAlreadyExistsException_whenHandleEmailAlreadyExistsException_throwCustomError() {
 
@@ -175,6 +204,11 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
 
     }
 
+    /**
+     * Tests the handling of {@link UserNotFoundException}.
+     * This test verifies that a {@link CustomError} is returned with the expected properties
+     * when a {@link UserNotFoundException} is thrown.
+     */
     @Test
     void givenUserNotFoundException_whenHandleUserNotFoundException_throwCustomError() {
 
@@ -199,6 +233,12 @@ class GlobalExceptionHandlerTest extends AbstractRestControllerTest {
 
     }
 
+    /**
+     * Verifies the properties of a {@link CustomError}.
+     *
+     * @param expectedError the expected custom error
+     * @param actualError   the actual custom error
+     */
     private void checkCustomError(CustomError expectedError, CustomError actualError) {
 
         assertThat(actualError).isNotNull();

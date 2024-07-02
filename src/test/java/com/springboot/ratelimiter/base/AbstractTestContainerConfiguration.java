@@ -8,6 +8,9 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Configuration class named {@link AbstractTestContainerConfiguration} for Testcontainers setup.
+ */
 @Testcontainers
 class AbstractTestContainerConfiguration {
 
@@ -18,6 +21,9 @@ class AbstractTestContainerConfiguration {
     public static GenericContainer<?> redisContainer = new GenericContainer<>("redis:latest")
             .withExposedPorts(6379);
 
+    /**
+     * Starts the Testcontainers before all tests.
+     */
     @BeforeAll
     static void beforeAll() {
         MYSQL_CONTAINER.withReuse(true);
@@ -25,6 +31,11 @@ class AbstractTestContainerConfiguration {
         redisContainer.start();
     }
 
+    /**
+     * Overrides Spring properties with container properties.
+     *
+     * @param dynamicPropertyRegistry the registry to override properties
+     */
     @DynamicPropertySource
     private static void overrideProps(DynamicPropertyRegistry dynamicPropertyRegistry) {
         dynamicPropertyRegistry.add("spring.datasource.username", MYSQL_CONTAINER::getUsername);
