@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Class named {@link CustomPaging} representing custom paging information.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,6 +23,11 @@ public class CustomPaging {
     @Min(value = 1, message = "Page size must be bigger than 0")
     private Integer pageSize;
 
+    /**
+     * Gets the zero-based page number.
+     *
+     * @return the zero-based page number
+     */
     public Integer getPageNumber() {
         return pageNumber - 1;
     }

@@ -8,6 +8,9 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+/**
+ * Class named {@link CustomPagingRequest} representing a custom paging request.
+ */
 @Getter
 @Setter
 @SuperBuilder
@@ -16,6 +19,11 @@ public class CustomPagingRequest {
 
     private CustomPaging pagination;
 
+    /**
+     * Converts the custom paging request to a Pageable object.
+     *
+     * @return the Pageable object
+     */
     public Pageable toPageable() {
         return PageRequest.of(
                 Math.toIntExact(pagination.getPageNumber()),

@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.LocalDateTime;
 
+/**
+ * Class named {@link CustomResponse} representing a custom response.
+ *
+ * @param <T> the type of the response content
+ */
 @Getter
 @Builder
 public class CustomResponse<T> {
@@ -27,7 +32,13 @@ public class CustomResponse<T> {
             .isSuccess(true)
             .build();
 
-
+    /**
+     * Creates a success response with the given content.
+     *
+     * @param response the response content
+     * @param <E> the type of the response content
+     * @return the CustomResponse object
+     */
     public static <E> CustomResponse<E> ok(E response) {
         return CustomResponse.<E>builder()
                 .response(response)
@@ -36,6 +47,13 @@ public class CustomResponse<T> {
                 .build();
     }
 
+    /**
+     * Creates a created response with the given content.
+     *
+     * @param response the response content
+     * @param <E> the type of the response content
+     * @return the CustomResponse object
+     */
     @ResponseStatus(HttpStatus.CREATED)
     public static <E> CustomResponse<E> created(E response) {
         return CustomResponse.<E>builder()
